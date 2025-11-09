@@ -2,19 +2,32 @@ spring:
   application:
     name: TodoApp
   datasource:
-    url: jdbc:h2:mem:todo_db:DB_CLOSE_DELAY=-1;MODE=PostgreSQL
+    # ?? FILE-BASED H2 ? ma'lumotlar ./data/todo_db.mv.db faylga yoziladi
+    url: jdbc:h2:file:./data/todo_db;DB_CLOSE_DELAY=-1;MODE=PostgreSQL;DATABASE_TO_UPPER=false
     driver-class-name: org.h2.Driver
     username: sa
-    password:
+    password: ""
   jpa:
     hibernate:
-      ddl-auto: none # For flyway control
+      ddl-auto: none
     show-sql: true
     database-platform: org.hibernate.dialect.H2Dialect
+    properties:
+      hibernate:
+        format_sql: true
   flyway:
     enabled: true
     locations: classpath:db/migration
     baseline-on-migrate: true
     validate-on-migrate: true
+    # Optional: agar yangi komanda qo'shsangiz, eskisi bilan conflict bo'lmasligi uchun
+    clean-disabled: true
+  web:
+    resources:
+      add-mappings: false # static resource qidirishni o'chiring (xavfsizlik + tezlik)
 server:
-  port: 8080
+  port: 8081
+
+# Bonus: H2 Console (faqat local uchun!)
+spring.h2.console.enabled: true
+spring.h2.console.path: /h2-console
